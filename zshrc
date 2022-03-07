@@ -1,3 +1,12 @@
+function file_days_old {
+	return $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+}
+
+if (file_days_old('~/.znm-conf_check') >  1); then
+	touch ~/.znm-conf_check
+	git pull --quiet
+fi
+
 # If you come from bash you might have to change your $PATH.
 export PATH=$PATH:./node_modules/.bin:$(yarn global bin)
 
