@@ -1,10 +1,14 @@
 #!/bin/sh
 sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || exit
-
-__dirname=$(cd "$(dirname "$0")" || exit 1; pwd)
-cd "$__dirname" || exit 1
-
 sudo apt install build-essential gcc cmake
-./update.sh
 
-cd - || exit
+if [ -e ~/.zshrc ]; then
+  if [ -e ~/.zshrc.bak ]; then echo '.zshrc.bak already exist' && exit 1; fi
+  mv ~/.zshrc ~/.zshrc.bak
+fi
+
+if [ -e ~/znm-conf.zsh ]; then
+  git clone "git@gitlab.com:ZatsuneNoMokou/znm-conf.zsh.git" ~/.znm-conf.zsh
+fi
+
+./update.sh
