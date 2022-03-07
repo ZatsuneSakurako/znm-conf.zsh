@@ -5,7 +5,7 @@ cd "$__dirname" || exit 1
 mkdir -p ~/bin
 curl -L git.io/antigen > ~/bin/antigen.zsh
 
-if [ ! -e ~/.bash_aliases ]; then
+if [ ! -e ~/.gitignore ]; then
   touch ~/.gitignore
   git config --global core.excludesFile ~/.gitignore
 fi
