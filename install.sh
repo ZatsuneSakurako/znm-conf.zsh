@@ -19,8 +19,4 @@ if [ -e ~/.zshrc ]; then
   mv ~/.zshrc ~/.zshrc.bak
 fi
 
-if [ -e ~/znm-conf.zsh ]; then
-  git clone "git@gitlab.com:ZatsuneNoMokou/znm-conf.zsh.git" ~/.znm-conf.zsh
-fi
-
 ./update.sh
