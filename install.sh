@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ -z "${which git}" ]; then
+if [ -z "${which git}" ] || [ -z "${which zsh}" ]; then
   echo 'Installing libs'
   sudo apt install git zsh curl wget
 fi
