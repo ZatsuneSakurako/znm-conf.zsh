@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 __dirname=$(cd "$(dirname "$0")" || exit 1; pwd)
 cd "$__dirname" || exit 1
 

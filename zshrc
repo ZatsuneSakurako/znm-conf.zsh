@@ -1,10 +1,14 @@
 function file_days_old {
-	return $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+	if [ -f "$1" ]; then
+		return $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+	fi
+	return -1
 }
 
 if (file_days_old('~/.znm-conf_check') >  1); then
-	touch ~/.znm-conf_check
+	date -u -Ins > ~/.znm-conf_check
 	git pull --quiet
+	~/.znm-conf.zsh/update.sh
 fi
 
 # If you come from bash you might have to change your $PATH.
@@ -80,6 +84,26 @@ HIST_STAMPS="mm/dd/yyyy"
 #autoload -U compinit && compinit
 
 
+
+sysctl_status () {
+        red=`tput setaf 1`
+        green=`tput setaf 2`
+        bold=`tput bold`
+        reset=`tput sgr0`
+
+        echo
+        currentState=`systemctl is-active $1`
+        currentEnabledState=`systemctl is-enabled $1`
+        currentColor=`tput setaf 1`
+        if [ $currentState = "active" ]; then
+                currentColor=`tput setaf 2`
+        fi
+        if [ ! -z "$currentEnabledState" -a "$currentEnabledState" != " " ]; then
+                currentEnabledState=" ($currentEnabledState)"
+        fi
+
+        echo "${bold}${currentColor}● ${reset}$1: ${bold}${currentColor}$currentState$currentEnabledState${reset}"
+}
 
 
 

@@ -1,5 +1,6 @@
 # znm-conf.zsh
 
 ```bash
-sh -c "$(curl -fsSL https://gitlab.com/ZatsuneNoMokou/znm-conf.zsh/-/raw/master/install.sh)"
+git clone git@gitlab.com:ZatsuneNoMokou/znm-conf.zsh.git ~/.znm-conf.zsh
+~/.znm-conf.zsh
 ```
