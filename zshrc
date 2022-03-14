@@ -1,15 +1,19 @@
 function file_days_old {
 	if [ -f "$1" ]; then
-		return $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+	 	echo $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+	 	return 0
 	fi
+	echo "-1"
 	return -1
 }
 
-if (file_days_old('~/.znm-conf_check') >  1); then
+old=$(file_days_old "$HOME/.znm-conf_check")
+if [[ $old > 1 ]] || [[ $old == -1 ]]; then
 	date -u -Ins > ~/.znm-conf_check
 	git pull --quiet
 	~/.znm-conf.zsh/update.sh
 fi
+unset old;
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$PATH:./node_modules/.bin:$(yarn global bin)
