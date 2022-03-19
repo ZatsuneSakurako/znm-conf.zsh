@@ -90,15 +90,15 @@ HIST_STAMPS="mm/dd/yyyy"
 
 
 sysctl_status () {
-        red=`tput setaf 1`
-        green=`tput setaf 2`
-        bold=`tput bold`
-        reset=`tput sgr0`
+        local red=`tput setaf 1`
+        local green=`tput setaf 2`
+        local bold=`tput bold`
+        local reset=`tput sgr0`
 
         echo
-        currentState=`systemctl is-active $1`
-        currentEnabledState=`systemctl is-enabled $1`
-        currentColor=`tput setaf 1`
+        local currentState=`systemctl is-active $1`
+        local currentEnabledState=`systemctl is-enabled $1`
+        local currentColor=`tput setaf 1`
         if [ $currentState = "active" ]; then
                 currentColor=`tput setaf 2`
         fi
@@ -117,7 +117,7 @@ source ~/bin/antigen.zsh
 # Load the oh-my-zsh's library.
 antigen use oh-my-zsh
 
-antigenPlugins=(
+local antigenPlugins=(
 	# Bundles from the default repo (robbyrussell's oh-my-zsh).
 	'git'
 
