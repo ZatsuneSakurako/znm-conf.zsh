@@ -107,7 +107,10 @@ __zatsunenomokou_precmd() {
 	if [ -n "${__zsh_znm_preexec_start_time}" ]; then
 		local end=${EPOCHREALTIME}
 		local duration=$((end - __zsh_znm_preexec_start_time))
-		__znm_elapse=" %F{cyan}$(__znm_display_time $duration) %{$reset_color%}"
+		if [[ $duration -gt 0.5 ]]; then
+ 			# Only show if duration > 500ms
+			__znm_elapse=" %F{cyan}$(__znm_display_time $duration) %{$reset_color%}"
+		fi
 		unset __zsh_znm_preexec_start_time
 	fi
 
