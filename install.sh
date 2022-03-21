@@ -2,7 +2,7 @@
 
 if [ -z "$(which git)" ] || [ -z "$(which zsh)" ]; then
   echo 'Installing libs'
-  sudo apt install git zsh curl wget
+  sudo apt install git zsh curl wget fonts-powerline
 fi
 
 if [ ! -e ~/.oh-my-zsh ]; then
