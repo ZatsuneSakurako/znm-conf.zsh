@@ -5,89 +5,84 @@ local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
 ZNM_GIT_SHOW_STATUS=''
 # from https://github.com/Ottootto2010/funkyberlin-zsh-theme/blob/c93f59bab345b8a62dcee90592439912ebf4563f/funkyberlin.zsh-theme#L22
-git_status() {
+__git_status() {
 	local ZSH_THEME_GIT_PROMPT_CLEAN="%{$FG[154]%}✓%{$reset_color%}"
 	local ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[154]%}▴%{$reset_color%}"
 	local ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[196]%}▾%{$reset_color%}"
 	local ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[154]%}●%{$reset_color%}"
 	local ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[202]%}●%{$reset_color%}"
 	local ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[red]%}●%{$reset_color%}"
-	_STATUS=""
+	local STATUS=""
 
 	# check status of files
-	_INDEX=$(command git status --porcelain 2> /dev/null)
-	if [[ -n "$_INDEX" ]]; then
+	local INDEX=$(command git status --porcelain 2> /dev/null)
+	if [[ -n "$INDEX" ]]; then
 		if $(echo "$_INDEX" | command grep -q '^[AMRD]. '); then
-			_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_STAGED"
+			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED"
 		fi
 		if $(echo "$_INDEX" | command grep -q '^.[MTD] '); then
-			_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_UNSTAGED"
+			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNSTAGED"
 		fi
 		if $(echo "$_INDEX" | command grep -q -E '^\?\? '); then
-			_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED"
+			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED"
 		fi
 		if $(echo "$_INDEX" | command grep -q '^UU '); then
-			_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_UNMERGED"
+			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNMERGED"
 		fi
 		else
-			_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
+			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
 	fi
 
 	# check status of local repository
-	_INDEX=$(command git status --porcelain -b 2> /dev/null)
-	if $(echo "$_INDEX" | command grep -q '^## .*ahead'); then
-		_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_AHEAD"
+	INDEX=$(command git status --porcelain -b 2> /dev/null)
+	if $(echo "$INDEX" | command grep -q '^## .*ahead'); then
+		STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_AHEAD"
 	fi
-	if $(echo "$_INDEX" | command grep -q '^## .*behind'); then
-		_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_BEHIND"
+	if $(echo "$INDEX" | command grep -q '^## .*behind'); then
+		STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_BEHIND"
 	fi
-	if $(echo "$_INDEX" | command grep -q '^## .*diverged'); then
-		_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_DIVERGED"
+	if $(echo "$INDEX" | command grep -q '^## .*diverged'); then
+		STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_DIVERGED"
 	fi
 
 	if $(command git rev-parse --verify refs/stash &> /dev/null); then
-		_STATUS="$_STATUS$ZSH_THEME_GIT_PROMPT_STASHED"
+		STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STASHED"
 	fi
 
-	now=$(($(date +%s%0N)/1000000))
-	elapsed=$(($now-$timer))
-
-	echo "${elapsed}\n"
-
-	echo $_STATUS
+	echo $STATUS
 }
-git_prompt() {
+__git_prompt() {
 	local ZSH_THEME_GIT_PROMPT_PREFIX=" [git%{$reset_color%}%{$FG[176]%} "
 	local ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]"
 
 	local ref=''
-	local _branch=''
+	local branch=''
 	ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
 	ref=$(command git rev-parse --short HEAD 2> /dev/null)
 	if [[ $ref != '' ]]; then
-		_branch="${ref#refs/heads/}"
+		branch="${ref#refs/heads/}"
 	fi
 
-	local _result=""
-	if [[ -n "$_branch" ]]; then
-		_result="$ZSH_THEME_GIT_PROMPT_PREFIX$_branch"
+	local result=""
+	if [[ -n "$branch" ]]; then
+		result="$ZSH_THEME_GIT_PROMPT_PREFIX$branch"
 
 		if [[ -n "$ZNM_GIT_SHOW_STATUS" ]]; then
-			local _status=$(git_status)
+			local _status=$(__git_status)
 			if [[ "${_status}x" != "x" ]]; then
-				_result="$_result $_status"
+				result="$result $_status"
 			fi
 		fi
 
-		_result="$_result$ZSH_THEME_GIT_PROMPT_SUFFIX"
+		result="$result$ZSH_THEME_GIT_PROMPT_SUFFIX"
 	fi
-	echo $_result
+	echo $result
 }
 
 
 
 # From (and modified) https://github.com/caiogondim/bullet-train.zsh/blob/d60f62c34b3d9253292eb8be81fb46fa65d8f048/bullet-train.zsh-theme#L387
-function displaytime {
+function __znm_display_time {
 	local T=$1
 	local MS=$((1000*(T%1)))
 	T=$(printf '%d' $T)
@@ -102,29 +97,29 @@ function displaytime {
 	[[ $MS > 0 ]] && printf '%dms' $MS
 }
 
-zatsunenomokou_preexec() {
+__zatsunenomokou_preexec() {
 	__zsh_znm_preexec_start_time=${EPOCHREALTIME}
 }
 
-znm_elapse=''
-zatsunenomokou_precmd() {
+__znm_elapse=''
+__zatsunenomokou_precmd() {
 	znm_elapse=''
 	if [ -n "${__zsh_znm_preexec_start_time}" ]; then
 		local end=${EPOCHREALTIME}
 		local duration=$((end - __zsh_znm_preexec_start_time))
-		znm_elapse=" %F{cyan}$(displaytime $duration) %{$reset_color%}"
+		__znm_elapse=" %F{cyan}$(__znm_display_time $duration) %{$reset_color%}"
 		unset __zsh_znm_preexec_start_time
 	fi
 
 	print
 	local username="%{$fg[$NCOLOR]%}%n%{$fg[cyan]%}@%m%{$reset_color%}"
-	print -P "${username} %~$(git_prompt)"
+	print -P "${username} %~$(__git_prompt)"
 }
 autoload -U add-zsh-hook
-add-zsh-hook precmd zatsunenomokou_precmd
-add-zsh-hook preexec zatsunenomokou_preexec
+add-zsh-hook precmd __zatsunenomokou_precmd
+add-zsh-hook preexec __zatsunenomokou_preexec
 
 
 
 PROMPT='%D{%T} %{$fg[red]%}%(!.#.»)%{$reset_color%} '
-RPS1='${return_code}${znm_elapse}'
+RPS1='${return_code}${__znm_elapse}'
