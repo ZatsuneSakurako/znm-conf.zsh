@@ -1,5 +1,5 @@
 if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="cyan"; fi
-local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
+local return_code="%(?..%{$fg[red]%}%?↵%{$reset_color%})"
 
 
 
@@ -109,7 +109,7 @@ __zatsunenomokou_precmd() {
 		local duration=$((end - __zsh_znm_preexec_start_time))
 		if [[ $duration -gt 0.5 ]]; then
  			# Only show if duration > 500ms
-			__znm_elapse=" %F{cyan}$(__znm_display_time $duration) %{$reset_color%}"
+			__znm_elapse=" %F{cyan}$(__znm_display_time $duration)⚡ %{$reset_color%}"
 		fi
 		unset __zsh_znm_preexec_start_time
 	fi
