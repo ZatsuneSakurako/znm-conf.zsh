@@ -3,6 +3,28 @@ local return_code="%(?..%{$fg[red]%}%?↵%{$reset_color%})"
 
 
 
+# from https://github.com/Tesohh/omzbigpath/blob/master/bigpath.zsh-theme
+# but in associative array variable
+__znm_colors=( )
+typeset -gA __znm_colors
+if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
+    __znm_colors[turquoise]="%F{81}"
+    __znm_colors[red]="%F{196}"
+    __znm_colors[orange]="%F{166}"
+    __znm_colors[purple]="%F{135}"
+    __znm_colors[hotpink]="%F{161}"
+    __znm_colors[limegreen]="%F{118}"
+    __znm_colors[gray]="%F{8}"
+else
+    __znm_colors[turquoise]="$fg[cyan]"
+    __znm_colors[orange]="$fg[yellow]"
+    __znm_colors[purple]="$fg[magenta]"
+    __znm_colors[hotpink]="$fg[red]"
+    __znm_colors[limegreen]="$fg[green]"
+fi
+
+
+
 ZNM_GIT_SHOW_STATUS=''
 # from https://github.com/Ottootto2010/funkyberlin-zsh-theme/blob/c93f59bab345b8a62dcee90592439912ebf4563f/funkyberlin.zsh-theme#L22
 __git_status() {
@@ -102,6 +124,7 @@ __zatsunenomokou_preexec() {
 }
 
 __znm_elapse=''
+__znm_rps1=''
 __zatsunenomokou_precmd() {
 	znm_elapse=''
 	if [ -n "${__zsh_znm_preexec_start_time}" ]; then
@@ -112,6 +135,12 @@ __zatsunenomokou_precmd() {
 			__znm_elapse=" %F{cyan}$(__znm_display_time $duration)⚡ %{$reset_color%}"
 		fi
 		unset __zsh_znm_preexec_start_time
+	fi
+
+	__znm_rps1=''
+	local backgroundJobs=$(jobs -l | wc -l)
+	if [[ $backgroundJobs -gt 0 ]]; then
+		__znm_rps1+=" %{$__znm_colors[purple]%}${backgroundJobs}⚙"
 	fi
 
 	print
@@ -125,4 +154,4 @@ add-zsh-hook preexec __zatsunenomokou_preexec
 
 
 PROMPT='%D{%T} %{$fg[red]%}%(!.#.»)%{$reset_color%} '
-RPS1='${return_code}${__znm_elapse}'
+RPS1='${return_code}${__znm_elapse}${__znm_rps1}'
