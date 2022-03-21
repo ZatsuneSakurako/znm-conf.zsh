@@ -1,13 +1,13 @@
-function file_days_old {
-	if [ -f "$1" ]; then
-	 	echo $((($(date +%s) - $(date +%s -r "$1")) / 86400))
-	 	return 0
-	fi
-	echo "-1"
-	return -1
-}
+function () {
+	function file_days_old {
+		if [ -f "$1" ]; then
+		    echo $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+		    return 0
+		fi
+		echo "-1"
+		return -1
+	}
 
-function updateCheck {
 	old=$(file_days_old "$HOME/.znm-conf_check")
 	if [[ $old > 1 ]] || [[ $old == -1 ]]; then
 		date -u -Ins > ~/.znm-conf_check
@@ -18,8 +18,6 @@ function updateCheck {
 	fi
 	unset old;
 }
-updateCheck
-unset updateCheck
 
 
 
