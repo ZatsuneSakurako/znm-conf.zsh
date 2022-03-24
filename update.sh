@@ -32,7 +32,7 @@ function () {
       fi
     else
       # if ~/.zshrc exist, and is not a symbolic link
-      echo "~/.zshrc already exist and is not a link, please remove it manually (and a backup if needed)"
+      echo "~/.zshrc already exist and is not a link, please remove it manually (and make a backup if needed)"
     fi
   fi
 
