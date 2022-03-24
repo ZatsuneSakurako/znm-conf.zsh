@@ -1,18 +1,47 @@
 #!/bin/zsh
-__dirname=$(cd "$(dirname "$0")" || exit 1; pwd)
-cd "$__dirname" || exit 1
 
-mkdir -p ~/bin
-curl -L git.io/antigen > ~/bin/antigen.zsh
+function () {
+  local __dirname=$(cd "$(dirname "$0")" || exit 1; pwd)
+  cd "$__dirname" || exit 1
 
-if [ ! -e ~/.gitignore ]; then
-  touch ~/.gitignore
-  git config --global core.excludesFile ~/.gitignore
-fi
+  mkdir -p ~/bin
+  curl -L git.io/antigen > ~/bin/antigen.zsh
 
-if [ ! -e ~/.bash_aliases ]; then touch ~/.bash_aliases;fi
+  if [ ! -e ~/.gitignore ]; then
+    touch ~/.gitignore
+    git config --global core.excludesFile ~/.gitignore
+  fi
 
-ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme.zsh-theme
-ln -s "${__dirname}/zshrc" ~/.zshrc
+  if [ ! -e ~/.bash_aliases ]; then touch ~/.bash_aliases;fi
 
-cd - || exit
+  ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme.zsh-theme
+
+
+
+  local tryLn=0
+  if [ ! -e "$HOME/.zshrc" ]; then
+    # if ~/.zshrc does not exist
+    tryLn=1
+  else
+    if [[ -L "$HOME/.zshrc" ]]; then
+      # If ~/.zshrc is a symbolic link
+      local znmZsh=$(readlink -f -e -- "${__dirname}/zshrc")
+      local result=$(readlink -f -e -- ~/.zshrc)
+      if [[ "${result}" != "${znmZsh}" ]]; then
+        tryLn=1
+      fi
+    else
+      # if ~/.zshrc exist, and is not a symbolic link
+      echo "~/.zshrc already exist and is not a link, please remove it manually (and a backup if needed)"
+    fi
+  fi
+
+  if [[ $tryLn == 1 ]]; then
+    ln -s "${__dirname}/zshrc" ~/.zshrc
+  fi
+
+
+
+  cd - || exit
+}
+
