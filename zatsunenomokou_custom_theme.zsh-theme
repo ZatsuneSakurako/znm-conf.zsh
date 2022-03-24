@@ -121,6 +121,7 @@ function __znm_display_time {
 
 __zatsunenomokou_preexec() {
 	__zsh_znm_preexec_start_time=${EPOCHREALTIME}
+	__znm_elapse=''
 }
 
 __znm_elapse=''
