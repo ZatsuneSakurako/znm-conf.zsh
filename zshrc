@@ -8,7 +8,7 @@ function () {
 		return -1
 	}
 
-	old=$(file_days_old "$HOME/.znm-conf_check")
+	local old=$(file_days_old "$HOME/.znm-conf_check")
 	if [[ $old > 1 ]] || [[ $old == -1 ]]; then
 		date -u -Ins > ~/.znm-conf_check
 
