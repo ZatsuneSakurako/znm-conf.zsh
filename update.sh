@@ -5,7 +5,7 @@ function () {
   cd "$__dirname" || exit 1
 
   mkdir -p ~/bin
-  curl -L git.io/antigen > ~/bin/antigen.zsh
+  curl -# -L git.io/antigen > ~/bin/antigen.zsh
 
   if [ ! -e ~/.gitignore ]; then
     touch ~/.gitignore
