@@ -14,6 +14,10 @@ function () {
 
   if [ ! -e ~/.bash_aliases ]; then touch ~/.bash_aliases;fi
 
+  if [ ! -z "$(which thefuck)" ]; then
+    echo "thefuck is not installed \"sudo apt install thefuck\""
+  fi
+
   ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme.zsh-theme
 
 

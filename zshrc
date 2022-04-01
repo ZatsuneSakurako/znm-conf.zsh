@@ -152,6 +152,10 @@ if [ -f ~/.zshrc.local ]; then . ~/.zshrc.local; fi
 
 antigen apply
 
+if [ -z "$(which thefuck)" ]; then
+	eval $(thefuck --alias)
+fi
+
 if [ -f ~/.bash_aliases ]; then . ~/.bash_aliases; fi
 
 

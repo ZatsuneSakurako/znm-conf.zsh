@@ -5,6 +5,11 @@ if [ -z "$(which git)" ] || [ -z "$(which zsh)" ]; then
   sudo apt install git zsh curl wget fonts-powerline
 fi
 
+if [ -z "$(which thefuck)" ]; then
+  echo 'Installing libs'
+  sudo apt install thefuck
+fi
+
 if [ ! -e ~/.oh-my-zsh ]; then
   sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || exit
 fi
