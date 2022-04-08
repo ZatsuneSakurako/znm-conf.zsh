@@ -152,7 +152,7 @@ if [ -f ~/.zshrc.local ]; then . ~/.zshrc.local; fi
 
 antigen apply
 
-if [ -z "$(which thefuck)" ]; then
+if [ ! -z "$(which thefuck)" ]; then
 	eval $(thefuck --alias)
 fi
 

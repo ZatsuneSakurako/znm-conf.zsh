@@ -14,7 +14,7 @@ function () {
 
   if [ ! -e ~/.bash_aliases ]; then touch ~/.bash_aliases;fi
 
-  if [ ! -z "$(which thefuck)" ]; then
+  if [ -z "$(which thefuck)" ]; then
     echo "thefuck is not installed \"sudo apt install thefuck\""
   fi
 
