@@ -1,7 +1,7 @@
 #!/bin/zsh
 
+__dirname=$(cd "$(dirname "$0")" || exit 1; pwd);
 function () {
-  local __dirname=$(cd "$(dirname "$0")" || exit 1; pwd)
   cd "$__dirname" || exit 1
 
   mkdir -p ~/bin
@@ -46,6 +46,7 @@ function () {
 
 
 
+  unset __dirname
   cd - || exit
 }
 
