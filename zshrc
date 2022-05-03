@@ -14,6 +14,8 @@ function () {
 
 		cd ~/.znm-conf.zsh
 		git pull --quiet
+		cd -
+
 		~/.znm-conf.zsh/update.sh
 	fi
 	unset old;
