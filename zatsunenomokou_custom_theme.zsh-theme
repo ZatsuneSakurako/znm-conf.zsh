@@ -119,13 +119,19 @@ function __znm_display_time {
 	[[ $MS > 0 ]] && printf '%dms' $MS
 }
 
+function __znm_background_tasks() {
+	local backgroundJobs=$(jobs -l | wc -l)
+	if [[ $backgroundJobs -gt 0 ]]; then
+		echo " %{$__znm_colors[purple]%}${backgroundJobs}⚙"
+	fi
+}
+
 __zatsunenomokou_preexec() {
 	__zsh_znm_preexec_start_time=${EPOCHREALTIME}
 	__znm_elapse=''
 }
 
 __znm_elapse=''
-__znm_rps1=''
 __zatsunenomokou_precmd() {
 	znm_elapse=''
 	if [ -n "${__zsh_znm_preexec_start_time}" ]; then
@@ -136,12 +142,6 @@ __zatsunenomokou_precmd() {
 			__znm_elapse=" %F{cyan}$(__znm_display_time $duration)⚡ %{$reset_color%}"
 		fi
 		unset __zsh_znm_preexec_start_time
-	fi
-
-	__znm_rps1=''
-	local backgroundJobs=$(jobs -l | wc -l)
-	if [[ $backgroundJobs -gt 0 ]]; then
-		__znm_rps1+=" %{$__znm_colors[purple]%}${backgroundJobs}⚙"
 	fi
 
 	print
@@ -155,4 +155,4 @@ add-zsh-hook preexec __zatsunenomokou_preexec
 
 
 PROMPT='%D{%T} %{$fg[red]%}%(!.#.»)%{$reset_color%} '
-RPS1='${return_code}${__znm_elapse}${__znm_rps1}'
+RPS1='${return_code}${__znm_elapse}$(__znm_background_tasks)'
