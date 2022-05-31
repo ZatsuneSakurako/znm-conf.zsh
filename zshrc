@@ -141,6 +141,7 @@ local antigenPlugins=(
 	'gulp'
 	'node'
 	'yarn'
+	'wp-cli'
 	
 	# tmux-mem-cpu-load
 	'thewtex/tmux-mem-cpu-load'
