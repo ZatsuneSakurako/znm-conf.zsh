@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+# red=$(tput setaf 1)
+# green=$(tput setaf 2)
+# bold=$(tput bold)
+# reset=$(tput sgr0)
+
+echo
+currentState=$(systemctl is-active $1)
+currentEnabledState=$(systemctl is-enabled $1)
+_currentColor=$(tput setaf 1)
+if [[ "$currentState" == "active" ]]; then
+  _currentColor=$(tput setaf 2)
+fi
+if [ ! -z "$currentEnabledState" ] && [ "$currentEnabledState" != " " ]; then
+  currentEnabledState=" ($currentEnabledState)"
+fi
+
+echo "$(tput bold)${_currentColor}● $(tput sgr0)$1: $(tput bold)${_currentColor}$currentState$currentEnabledState$(tput sgr0)"

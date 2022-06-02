@@ -96,27 +96,26 @@ HIST_STAMPS="mm/dd/yyyy"
 #autoload -U compinit && compinit
 
 
+znm () {
+	local __dirname=$(cd "$(dirname "$0")" || exit 1; pwd);
 
-sysctl_status () {
-        local red=`tput setaf 1`
-        local green=`tput setaf 2`
-        local bold=`tput bold`
-        local reset=`tput sgr0`
+	local firstArg=$1
+	local args=()
+	for i ($*) {
+		args+=("\"${i//\"//\\\"}\"")
+	}
+	shift args
 
-        echo
-        local currentState=`systemctl is-active $1`
-        local currentEnabledState=`systemctl is-enabled $1`
-        local currentColor=`tput setaf 1`
-        if [ $currentState = "active" ]; then
-                currentColor=`tput setaf 2`
-        fi
-        if [ ! -z "$currentEnabledState" -a "$currentEnabledState" != " " ]; then
-                currentEnabledState=" ($currentEnabledState)"
-        fi
-
-        echo "${bold}${currentColor}● ${reset}$1: ${bold}${currentColor}$currentState$currentEnabledState${reset}"
+	echo $(zsh -c "\"$HOME/.znm-conf.zsh/bin/$1\" ${args[@]}");
 }
-
+# From https://stackoverflow.com/questions/17767208/writing-a-zsh-autocomplete-function
+# See https://zsh.sourceforge.io/Doc/Release/Completion-Using-compctl.html
+_znm_autocompl() {
+	cd $HOME/.znm-conf.zsh/bin/
+	reply=("${(@f)$(ls -D .)}")
+	local _void=$(cd -)
+}
+compctl -K _znm_autocompl znm
 
 
 source $ZSH/oh-my-zsh.sh
