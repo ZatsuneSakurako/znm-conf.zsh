@@ -6,13 +6,16 @@
 # reset=$(tput sgr0)
 
 echo
-currentState=$(systemctl is-active $1)
-currentEnabledState=$(systemctl is-enabled $1)
-_currentColor=$(tput setaf 1)
-if [[ "$currentState" == "active" ]]; then
-  _currentColor=$(tput setaf 2)
+currentState=$(systemctl is-active $1 | xargs)
+currentEnabledState=$(systemctl is-enabled $1 | xargs)
+_currentColor=""
+if [ "$currentState" != "" ]; then
+  _currentColor=$(tput setaf 1)
+  if [[ "$currentState" == "active" ]]; then
+    _currentColor=$(tput setaf 2)
+  fi
 fi
-if [ ! -z "$currentEnabledState" ] && [ "$currentEnabledState" != " " ]; then
+if [ ! -z "$currentEnabledState" ] && [ ! -z "$currentState" ]; then
   currentEnabledState=" ($currentEnabledState)"
 fi
 
