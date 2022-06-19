@@ -47,6 +47,6 @@ function () {
 
 
   unset __dirname
-  cd - || exit
+  cd - >/dev/null
 }
 
