@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 __dirname=$(cd "$(dirname "$0")" || exit 1; pwd);
+source "$HOME/.znm-conf.zsh/utils.zsh"
 function () {
 	cd "$__dirname" || exit 1
 

@@ -65,6 +65,7 @@ fi
 
 
 
+source "$HOME/.znm-conf.zsh/utils.zsh"
 # From https://github.com/spaceship-prompt/spaceship-prompt/blob/b92b7d2ecb8ded6b1a0ff72617f0106bbe8dcc69/sections/node.zsh
 __NODE_DEFAULT_VERSION=''
 if __znm_cmd_exists apt-show-versions; then
