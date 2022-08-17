@@ -1,8 +1,8 @@
 function () {
 	function file_days_old {
 		if [ -f "$1" ]; then
-		    echo $((($(date +%s) - $(date +%s -r "$1")) / 86400))
-		    return 0
+			echo $((($(date +%s) - $(date +%s -r "$1")) / 86400))
+			return 0
 		fi
 		echo "-1"
 		return -1
@@ -89,8 +89,8 @@ HIST_STAMPS="mm/dd/yyyy"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 #plugins=(
-#  git
-#  zsh-completions
+#	git
+#	zsh-completions
 #)
 
 #autoload -U compinit && compinit
