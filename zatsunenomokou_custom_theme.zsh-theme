@@ -25,6 +25,42 @@ fi
 
 
 
+# From https://github.com/spaceship-prompt/spaceship-prompt/blob/b92b7d2ecb8ded6b1a0ff72617f0106bbe8dcc69/sections/node.zsh
+__NODE_DEFAULT_VERSION=''
+if __znm_cmd_exists apt-show-versions; then
+__NODE_DEFAULT_VERSION=$(apt-show-versions nodejs | cut -d' ' -f2 | cut -d'-' -f1)
+fi
+__node_version() {
+	local NODE_SYMBOL="⬢ "
+
+	# Show NODE status only for JS-specific folders
+	[[ -f package.json || -d node_modules || -n *.js(#qN^/) ]] || return
+
+	local node_version
+
+	if __znm_cmd_exists fnm; then
+		node_version=$(fnm current 2>/dev/null)
+		[[ $node_version == "system" || $node_version == "node" ]] && return
+	elif __znm_cmd_exists nvm; then
+		node_version=$(nvm current 2>/dev/null)
+		[[ $node_version == "system" || $node_version == "node" ]] && return
+	elif __znm_cmd_exists nodenv; then
+		node_version=$(nodenv version-name)
+		[[ $node_version == "system" || $node_version == "node" ]] && return
+	elif __znm_cmd_exists node; then
+		node_version=$(node -v 2>/dev/null)
+	else
+		return
+	fi
+
+	node_version=${node_version/v/}
+	if [[ $node_version != $__NODE_DEFAULT_VERSION ]]; then
+		echo -n "%{%B%F{"green"}%}⬢ ${node_version}%{%b%f%}"
+	fi
+}
+
+
+
 ZNM_GIT_SHOW_STATUS=''
 # from https://github.com/Ottootto2010/funkyberlin-zsh-theme/blob/c93f59bab345b8a62dcee90592439912ebf4563f/funkyberlin.zsh-theme#L22
 __git_status() {
@@ -146,7 +182,7 @@ __zatsunenomokou_precmd() {
 
 	print
 	local username="%{$fg[$NCOLOR]%}%n%{$fg[cyan]%}@%m%{$reset_color%}"
-	print -P "${username} %~$(__git_prompt)"
+	print -P "${username} %~$(__git_prompt) $(__node_version)"
 }
 autoload -U add-zsh-hook
 add-zsh-hook precmd __zatsunenomokou_precmd

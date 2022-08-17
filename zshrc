@@ -33,6 +33,7 @@ export ZSH=$HOME/.oh-my-zsh
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
+source "$HOME/.znm-conf.zsh/utils.zsh"
 ZSH_THEME="zatsunenomokou_custom_theme"
 
 # Set list of themes to pick from when loading at random
@@ -151,6 +152,34 @@ local antigenPlugins=(
 for x in $antigenPlugins; do antigen bundle $x; done
 
 if [ -f ~/.zshrc.local ]; then . ~/.zshrc.local; fi
+
+if [ -d "$HOME/.nvm" ]; then
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+	# place this after nvm initialization!
+	autoload -U add-zsh-hook
+	load-nvmrc() {
+		local node_version="$(nvm version)"
+		local nvmrc_path="$(nvm_find_nvmrc)"
+
+		if [ -n "$nvmrc_path" ]; then
+			local nvmrc_node_version=$(nvm version "$(cat "${nvmrc_path}")")
+
+			if [ "$nvmrc_node_version" = "N/A" ]; then
+				nvm install
+			elif [ "$nvmrc_node_version" != "$node_version" ]; then
+				nvm use
+			fi
+		elif [ "$node_version" != "$(nvm version default)" ]; then
+			echo "Reverting to nvm default version"
+			nvm use default
+		fi
+	}
+	add-zsh-hook chpwd load-nvmrc
+	load-nvmrc
+fi
 
 antigen apply
 

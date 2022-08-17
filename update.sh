@@ -21,6 +21,10 @@ function () {
     echo "thefuck is not installed \"sudo apt install thefuck\""
   fi
 
+  if [ -z "$(which apt-show-versions)" ]; then
+    echo "apt-show-versions is not installed \"sudo apt install apt-show-versions\""
+  fi
+
   ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme.zsh-theme
   ln -sf "${__dirname}/zatsunenomokou_custom_theme_2.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme_2.zsh-theme
 
