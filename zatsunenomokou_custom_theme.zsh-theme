@@ -63,6 +63,28 @@ __node_version() {
 	fi
 }
 
+# From https://github.com/spaceship-prompt/spaceship-prompt/blob/b92b7d2ecb8ded6b1a0ff72617f0106bbe8dcc69/sections/php.zsh
+__php_version() {
+	setopt extendedglob
+
+	# Show only if php files or composer.json exist in current directory
+	# [[ -n *.php(#qN^/) || -f composer.json ]] || return
+	[[ -f composer.json ]] || return
+
+	__znm_cmd_exists php || return
+
+	local php_version=$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
+	local default_version=''
+	if __znm_cmd_exists apt-show-versions; then
+		default_version=$(apt-show-versions php | cut -d' ' -f2 | cut -d'-' -f1)
+	fi
+
+	php_version=${php_version/v/}
+	if [[ $php_version != $default_version ]]; then
+		echo -n "%{%B%F{"blue"}%}🐘 ${php_version}%{%b%f%}"
+	fi
+}
+
 
 
 ZNM_GIT_SHOW_STATUS=''
