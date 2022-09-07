@@ -180,6 +180,14 @@ if [ -d "$HOME/.nvm" ]; then
 	load-nvmrc
 fi
 
+if [ -d "$HOME/.bun" ]; then
+	source "$HOME/.bun/_bun"
+	
+	# bun
+	export BUN_INSTALL="$HOME/.bun"
+	export PATH="$BUN_INSTALL/bin:$PATH"
+fi
+
 antigen apply
 
 if [ ! -z "$(which thefuck)" ]; then
@@ -221,3 +229,4 @@ alias lla='ll -A'
 alias ll='l -l'
 alias la='l -A'
 alias l='ls --group-directories-first -hCF'
+
