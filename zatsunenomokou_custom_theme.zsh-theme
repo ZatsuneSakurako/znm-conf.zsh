@@ -27,15 +27,13 @@ fi
 
 source "$HOME/.znm-conf.zsh/utils.zsh"
 # From https://github.com/spaceship-prompt/spaceship-prompt/blob/b92b7d2ecb8ded6b1a0ff72617f0106bbe8dcc69/sections/node.zsh
-__NODE_DEFAULT_VERSION=''
-if __znm_cmd_exists apt-show-versions; then
-__NODE_DEFAULT_VERSION=$(apt-show-versions nodejs | cut -d' ' -f2 | cut -d'-' -f1)
-fi
 __node_version() {
+	setopt extendedglob
 	local NODE_SYMBOL="⬢ "
 
 	# Show NODE status only for JS-specific folders
-	[[ -f package.json || -d node_modules || -n *.js(#qN^/) ]] || return
+	# [[ -f package.json || -d node_modules || -n *.js(#qN^/) ]] || return
+	[[ -f package.json || -d node_modules ]] || return
 
 	local node_version
 
@@ -54,8 +52,13 @@ __node_version() {
 		return
 	fi
 
+	local default_version=''
+	if __znm_cmd_exists apt-show-versions; then
+	default_version=$(apt-show-versions nodejs | cut -d' ' -f2 | cut -d'-' -f1)
+	fi
+
 	node_version=${node_version/v/}
-	if [[ $node_version != $__NODE_DEFAULT_VERSION ]]; then
+	if [[ $node_version != $default_version ]]; then
 		echo -n "%{%B%F{"green"}%}⬢ ${node_version}%{%b%f%}"
 	fi
 }
@@ -183,7 +186,7 @@ __zatsunenomokou_precmd() {
 
 	print
 	local username="%{$fg[$NCOLOR]%}%n%{$fg[cyan]%}@%m%{$reset_color%}"
-	print -P "${username} %~$(__git_prompt) $(__node_version)"
+	print -P "${username} %~$(__git_prompt) $(__php_version) $(__node_version)"
 }
 autoload -U add-zsh-hook
 add-zsh-hook precmd __zatsunenomokou_precmd
