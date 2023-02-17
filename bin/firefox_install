@@ -1,2 +1,7 @@
 #!/bin/bash
-curl -o firefox-dev.tar.bz2 https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=linux64&lang=en-US && tar -jxvf firefox-dev.tar.bz2 && rm firefox-dev.tar.bz2 && sudo rm -rf /opt/firefox && sudo mv firefox /opt
+cd /opt || exit 1
+sudo curl -L -# -o firefox-dev.tar.bz2 'https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=linux64&lang=en-US'
+if [ -d firefox ]; then sudo rm -rf /opt/firefox.bak || exit 1; fi
+sudo tar -jxvf firefox-dev.tar.bz2 || exit 1
+sudo rm firefox-dev.tar.bz2 || exit 1
+cd - || exit 1
