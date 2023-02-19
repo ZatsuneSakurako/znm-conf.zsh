@@ -30,13 +30,21 @@ prompt_segment_right() {
 }
 
 prompt_end() {
-	if [[ $CURRENT_BG != 'default' ]] && [[ -n $CURRENT_BG ]]; then
+	if [[ $CURRENT_BG != 'NONE' ]] &&[[ $CURRENT_BG != 'default' ]] && [[ -n $CURRENT_BG ]]; then
 		echo -n " %{%k%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR_LEFT"
 	else
 		echo -n "%{%k%}"
 	fi
 	echo -n "%{%f%}"
 	CURRENT_BG=''
+}
+
+prompt_segment_set_start_status() {
+	CURRENT_BG='NONE'
+}
+prompt_segment_start() {
+	prompt_segment_set_start_status
+	prompt_segment "$1" "$2" "$3"
 }
 
 
@@ -99,7 +107,7 @@ __node_version() {
 
 	node_version=${node_version/v/}
 	if [[ $node_version != $default_version ]]; then
-		echo -n "%{%B%F{"green"}%}⬢ ${node_version}%{%b%f%}"
+		prompt_segment green white "⬢ ${node_version}"
 	fi
 }
 
@@ -121,7 +129,7 @@ __php_version() {
 
 	php_version=${php_version/v/}
 	if [[ $php_version != $default_version ]]; then
-		echo -n "%{%B%F{"blue"}%}🐘 ${php_version}%{%b%f%}"
+		prompt_segment blue white "🐘 ${php_version}"
 	fi
 }
 
@@ -224,7 +232,7 @@ function __znm_display_time {
 function __znm_background_tasks() {
 	local backgroundJobs=$(jobs -l | wc -l)
 	if [[ $backgroundJobs -gt 0 ]]; then
-		echo " %{$__znm_colors[purple]%}${backgroundJobs}⚙"
+		echo " %F{magenta}${backgroundJobs}⚙"
 	fi
 }
 
@@ -245,10 +253,6 @@ __zatsunenomokou_precmd() {
 		fi
 		unset __zsh_znm_preexec_start_time
 	fi
-
-	print
-	local username="%{$fg[$NCOLOR]%}%n%{$fg[cyan]%}@%m%{$reset_color%}"
-	print -P "${username} %~$(__git_prompt)"
 }
 autoload -U add-zsh-hook
 add-zsh-hook precmd __zatsunenomokou_precmd
@@ -257,8 +261,18 @@ add-zsh-hook preexec __zatsunenomokou_preexec
 
 
 __zatsunenomokou_buildPrompt() {
-	#print -P "%D{%T} %{$fg[red]%}%(!.#.»)%{$reset_color%} "
-	prompt_segment cyan default "%T"
+	echo -n "\n"
+	prompt_segment default cyan "%n@%m "
+	prompt_segment default white "%~"
+	prompt_segment default white "$(__git_prompt) "
+
+	prompt_segment_set_start_status
+	__php_version
+	__node_version
+	prompt_end
+
+	echo -n "\n"
+	prompt_segment_start cyan default "%T"
 	prompt_segment default "$NCOLOR" "%(!.#.»)"
 	prompt_end
 }
