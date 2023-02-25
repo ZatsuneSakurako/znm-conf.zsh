@@ -1,8 +1,3 @@
-if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="cyan"; fi
-local return_code="%(?..%{$fg[red]%}%?↵%{$reset_color%})"
-
-
-
 # From https://github.com/consolemaverick/zsh2000/blob/574cbee55ba02bdb2a6200f93ae144a64ea6fa6f/zsh2000.zsh-theme
 CURRENT_BG='NONE'
 SEGMENT_SEPARATOR_RIGHT='\ue0b2'
@@ -11,13 +6,13 @@ prompt_segment() {
   local bg fg
   [[ -n $1 ]] && bg="%K{$1}" || bg="%k"
   [[ -n $2 ]] && fg="%F{$2}" || fg="%f"
-  if [[ $CURRENT_BG != 'NONE' && $1 != $CURRENT_BG ]]; then
+  if [[ $CURRENT_BG != 'NONE' && $1 != "$CURRENT_BG" ]]; then
     echo -n " %{$bg%F{$CURRENT_BG}%}$SEGMENT_SEPARATOR_LEFT%{$fg%} "
   else
     echo -n "%{$bg%}%{$fg%}"
   fi
   CURRENT_BG=$1
-  [[ -n $3 ]] && echo -n $3
+  [[ -n $3 ]] && echo -n "$3"
 }
 
 prompt_segment_right() {
@@ -26,7 +21,7 @@ prompt_segment_right() {
 	[[ -n $2 ]] && fg="%F{$2}" || fg="%f"
 	echo -n "%K{$CURRENT_BG}%F{$1}$SEGMENT_SEPARATOR_RIGHT%{$bg%}%{$fg%} "
 	CURRENT_BG=$1
-	[[ -n $3 ]] && echo -n $3
+	[[ -n $3 ]] && echo -n "$3"
 }
 
 prompt_end() {
@@ -64,10 +59,15 @@ if [[ $TERM = *256color* || $TERM = *rxvt* ]]; then
     __znm_colors[limegreen]="%F{118}"
     __znm_colors[gray]="%F{8}"
 else
+    # shellcheck disable=SC1087
     __znm_colors[turquoise]="$fg[cyan]"
+    # shellcheck disable=SC1087
     __znm_colors[orange]="$fg[yellow]"
+    # shellcheck disable=SC1087
     __znm_colors[purple]="$fg[magenta]"
+    # shellcheck disable=SC1087
     __znm_colors[hotpink]="$fg[red]"
+    # shellcheck disable=SC1087
     __znm_colors[limegreen]="$fg[green]"
 fi
 
@@ -77,7 +77,6 @@ source "$HOME/.znm-conf.zsh/utils.zsh"
 # From https://github.com/spaceship-prompt/spaceship-prompt/blob/b92b7d2ecb8ded6b1a0ff72617f0106bbe8dcc69/sections/node.zsh
 __node_version() {
 	setopt extendedglob
-	local NODE_SYMBOL="⬢ "
 
 	# Show NODE status only for JS-specific folders
 	# [[ -f package.json || -d node_modules || -n *.js(#qN^/) ]] || return
@@ -106,7 +105,7 @@ __node_version() {
 	fi
 
 	node_version=${node_version/v/}
-	if [[ $node_version != $default_version ]]; then
+	if [[ $node_version != "$default_version" ]]; then
 		prompt_segment green white "⬢ ${node_version}"
 	fi
 }
@@ -121,49 +120,51 @@ __php_version() {
 
 	__znm_cmd_exists php || return
 
-	local php_version=$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
+	local php_version
+	php_version=$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
 	local default_version=''
 	if __znm_cmd_exists apt-show-versions; then
 		default_version=$(apt-show-versions php | cut -d' ' -f2 | cut -d'-' -f1)
 	fi
 
 	php_version=${php_version/v/}
-	if [[ $php_version != $default_version ]]; then
+	if [[ $php_version != "$default_version" ]]; then
 		prompt_segment blue white "🐘 ${php_version}"
 	fi
 }
 
 
 
-ZNM_GIT_SHOW_STATUS=''
+ZNM_GIT_SHOW_STATUS='1'
 # from https://github.com/Ottootto2010/funkyberlin-zsh-theme/blob/c93f59bab345b8a62dcee90592439912ebf4563f/funkyberlin.zsh-theme#L22
 __git_status() {
-	local ZSH_THEME_GIT_PROMPT_CLEAN="%{$FG[154]%}✓%{$reset_color%}"
-	local ZSH_THEME_GIT_PROMPT_AHEAD="%{$FG[154]%}▴%{$reset_color%}"
-	local ZSH_THEME_GIT_PROMPT_BEHIND="%{$FG[196]%}▾%{$reset_color%}"
-	local ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[154]%}●%{$reset_color%}"
-	local ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[202]%}●%{$reset_color%}"
-	local ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[red]%}●%{$reset_color%}"
 	local STATUS=""
 
-	# check status of files
-	local INDEX=$(command git status --porcelain 2> /dev/null)
-	if [[ -n "$INDEX" ]]; then
-		if $(echo "$_INDEX" | command grep -q '^[AMRD]. '); then
-			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED"
-		fi
-		if $(echo "$_INDEX" | command grep -q '^.[MTD] '); then
-			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNSTAGED"
-		fi
-		if $(echo "$_INDEX" | command grep -q -E '^\?\? '); then
-			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED"
-		fi
-		if $(echo "$_INDEX" | command grep -q '^UU '); then
-			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNMERGED"
-		fi
-		else
-			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_CLEAN"
-	fi
+#	local ZSH_THEME_GIT_PROMPT_STAGED="%{$FG[green]%}●"
+#	local ZSH_THEME_GIT_PROMPT_UNSTAGED="%{$FG[red]%}●"
+#	local ZSH_THEME_GIT_PROMPT_UNTRACKED="%{$fg_bold[red]%}●"
+#
+#	# check status of files
+#	local INDEX
+#	INDEX=$(command git status --porcelain 2> /dev/null)
+#	if [[ -n "$INDEX" ]]; then
+#		if $(echo "$_INDEX" | command grep -q '^[AMRD]. '); then
+#			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STAGED"
+#		fi
+#		if $(echo "$_INDEX" | command grep -q '^.[MTD] '); then
+#			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNSTAGED"
+#		fi
+#		if $(echo "$_INDEX" | command grep -q -E '^\?\? '); then
+#			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNTRACKED"
+#		fi
+#		if $(echo "$_INDEX" | command grep -q '^UU '); then
+#			STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_UNMERGED"
+#		fi
+#	fi
+
+	local ZSH_THEME_GIT_PROMPT_AHEAD="%{${__znm_colors[orange]}%}⇡"
+	local ZSH_THEME_GIT_PROMPT_BEHIND="%{${__znm_colors[limegreen]}%}⇣"
+	local ZSH_THEME_GIT_PROMPT_DIVERGED="%{${__znm_colors[red]}%}⇕"
 
 	# check status of local repository
 	INDEX=$(command git status --porcelain -b 2> /dev/null)
@@ -177,16 +178,9 @@ __git_status() {
 		STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_DIVERGED"
 	fi
 
-	if $(command git rev-parse --verify refs/stash &> /dev/null); then
-		STATUS="$STATUS$ZSH_THEME_GIT_PROMPT_STASHED"
-	fi
-
-	echo $STATUS
+	echo -n "$STATUS"
 }
 __git_prompt() {
-	local ZSH_THEME_GIT_PROMPT_PREFIX=" [git%{$reset_color%}%{$FG[176]%} "
-	local ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}]"
-
 	local ref=''
 	local branch=''
 	ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
@@ -197,18 +191,18 @@ __git_prompt() {
 
 	local result=""
 	if [[ -n "$branch" ]]; then
-		result="$ZSH_THEME_GIT_PROMPT_PREFIX$branch"
+		result="$branch"
 
 		if [[ -n "$ZNM_GIT_SHOW_STATUS" ]]; then
-			local _status=$(__git_status)
-			if [[ "${_status}x" != "x" ]]; then
+			local _status
+			_status=$(__git_status)
+			if [[ -n "${_status}" ]]; then
 				result="$result $_status"
 			fi
 		fi
 
-		result="$result$ZSH_THEME_GIT_PROMPT_SUFFIX"
+		prompt_segment magenta white "  $result"
 	fi
-	echo $result
 }
 
 
@@ -217,20 +211,21 @@ __git_prompt() {
 function __znm_display_time {
 	local T=$1
 	local MS=$((1000*(T%1)))
-	T=$(printf '%d' $T)
+	T=$(printf '%d' "$T")
 	local D=$((T/60/60/24))
 	local H=$((T/60/60%24))
 	local M=$((T/60%60))
 	local S=$((T%60))
-	[[ $D > 0 ]] && printf '%dd' $D
-	[[ $H > 0 ]] && printf '%dh' $H
-	[[ $M > 0 ]] && printf '%dm' $M
-	[[ $S > 0 ]] && printf '%ds' $S
-	[[ $MS > 0 ]] && printf '%dms' $MS
+	[[ $D -gt 0 ]] && printf '%dd' $D
+	[[ $H -gt 0 ]] && printf '%dh' $H
+	[[ $M -gt 0 ]] && printf '%dm' $M
+	[[ $S -gt 0 ]] && printf '%ds' $S
+	[[ $MS -gt 0 ]] && printf '%dms' $MS
 }
 
 function __znm_background_tasks() {
-	local backgroundJobs=$(jobs -l | wc -l)
+	local backgroundJobs
+	backgroundJobs=$(jobs -l | wc -l)
 	if [[ $backgroundJobs -gt 0 ]]; then
 		echo " %F{magenta}${backgroundJobs}⚙"
 	fi
@@ -243,10 +238,11 @@ __zatsunenomokou_preexec() {
 
 __znm_elapse=''
 __zatsunenomokou_precmd() {
-	znm_elapse=''
+	__znm_elapse=''
 	if [ -n "${__zsh_znm_preexec_start_time}" ]; then
 		local end=${EPOCHREALTIME}
 		local duration=$((end - __zsh_znm_preexec_start_time))
+		# shellcheck disable=SC2072
 		if [[ $duration -gt 0.5 ]]; then
  			# Only show if duration > 500ms
 			__znm_elapse=" %F{cyan}$(__znm_display_time $duration)⚡ %{$reset_color%}"
@@ -263,18 +259,25 @@ add-zsh-hook preexec __zatsunenomokou_preexec
 __zatsunenomokou_buildPrompt() {
 	echo -n "\n"
 	prompt_segment default cyan "%n@%m "
-	prompt_segment default white "%~"
-	prompt_segment default white "$(__git_prompt) "
+	prompt_segment default white "%~ "
 
 	prompt_segment_set_start_status
+	__git_prompt
 	__php_version
 	__node_version
 	prompt_end
 
-	echo -n "\n"
+	printf "\n"
 	prompt_segment_start cyan default "%T"
+
+	local NCOLOR;
+	if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="cyan"; fi
 	prompt_segment default "$NCOLOR" "%(!.#.»)"
 	prompt_end
 }
+# shellcheck disable=SC2016
+# shellcheck disable=SC2034
 PROMPT='%{%f%b%k%}$(__zatsunenomokou_buildPrompt) '
-RPS1='${return_code}${__znm_elapse}$(__znm_background_tasks)'
+# shellcheck disable=SC2016
+# shellcheck disable=SC2034
+RPS1='%(?..%{$fg[red]%}%?↵%{$reset_color%})${__znm_elapse}$(__znm_background_tasks)'
