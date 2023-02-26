@@ -141,14 +141,16 @@ local antigenPlugins=(
 	'node'
 	'yarn'
 	'wp-cli'
-	
-	# tmux-mem-cpu-load
-	'thewtex/tmux-mem-cpu-load'
 
 	# Syntax highlighting bundle.
 	'zsh-users/zsh-syntax-highlighting'
 )
 for x in $antigenPlugins; do antigen bundle $x; done
+
+if [[ "$(uname | tr '[:upper:]' '[:lower:]')" == "linux" ]]; then
+	# tmux-mem-cpu-load
+	antigen bundle 'thewtex/tmux-mem-cpu-load'
+fi
 
 if [ -f ~/.zshrc.local ]; then . ~/.zshrc.local; fi
 
