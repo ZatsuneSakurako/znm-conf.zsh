@@ -6,7 +6,7 @@ function () {
 	cd "$__dirname" || exit 1
 
 	mkdir -p ~/bin
-	curl -# -L git.io/antigen > ~/bin/antigen.zsh.new
+	wget -q -O ~/bin/antigen.zsh.new git.io/antigen
 	if [ $? -eq 0 ] && [ -e ~/.gitignore ]; then
 		mv ~/bin/antigen.zsh.new ~/bin/antigen.zsh
 	fi
