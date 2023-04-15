@@ -192,7 +192,7 @@ fi
 
 antigen apply
 
-if [ ! -z "$(which thefuck 2&>/dev/null)" ]; then
+if which thefuck 2&>/dev/null; then
 	eval $(thefuck --alias)
 fi
 
