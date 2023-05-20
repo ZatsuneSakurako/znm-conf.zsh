@@ -110,6 +110,20 @@ __node_version() {
 	fi
 }
 
+__node_packages() {
+	[[ -f package.json || -d node_modules ]] || return
+
+    local packageList
+    # shellcheck disable=SC2207
+	packageList=($(jq -r '.dependencies + .devDependencies // [] |keys|unique|.[]' package.json))
+
+	for packageName in "${packageList[@]}"
+	do
+		if [[ "$packageName" == 'gulp' ]]; then prompt_segment red white "🥤"; fi
+		if [[ "$packageName" == 'webpack' ]]; then prompt_segment 39 white "⬢"; fi
+	done
+}
+
 # From https://github.com/spaceship-prompt/spaceship-prompt/blob/b92b7d2ecb8ded6b1a0ff72617f0106bbe8dcc69/sections/php.zsh
 __php_version() {
 	setopt extendedglob
@@ -129,8 +143,14 @@ __php_version() {
 
 	php_version=${php_version/v/}
 	if [[ $php_version != "$default_version" ]]; then
-		prompt_segment blue white "🐘 ${php_version}"
+		prompt_segment 20 white "🐘 ${php_version}"
 	fi
+}
+
+__docker_version() {
+	[[ -f 'Dockerfile' || -f 'docker-compose.yml' ]] || return
+
+	prompt_segment 33 white "🐳"
 }
 
 
@@ -264,7 +284,9 @@ __zatsunenomokou_buildPrompt() {
 	prompt_segment_set_start_status
 	__git_prompt
 	__php_version
+	__docker_version
 	__node_version
+	__node_packages
 	prompt_end
 
 	printf "\n"
