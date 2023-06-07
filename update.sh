@@ -27,7 +27,7 @@ function () {
 	fi
 
 	ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme.zsh-theme
-	ln -sf "${__dirname}/zatsunenomokou_custom_theme_2.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme_2.zsh-theme
+	ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme_2.zsh-theme
 
 
 
