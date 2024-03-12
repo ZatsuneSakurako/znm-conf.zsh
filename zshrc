@@ -141,6 +141,7 @@ local antigenPlugins=(
 	'node'
 	'yarn'
 	'wp-cli'
+	'gcloud'
 
 	# Syntax highlighting bundle.
 	'zsh-users/zsh-syntax-highlighting'
