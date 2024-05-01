@@ -19,11 +19,17 @@ function () {
 	if [ ! -e ~/.bash_aliases ]; then touch ~/.bash_aliases;fi
 
 	if ! __znm_cmd_exists thefuck; then
-		echo "thefuck is not installed \"sudo apt install thefuck\""
+		if ! __znm_cmd_exists apt; then
+			echo "thefuck is not installed \"pip3 install thefuck\""
+		else
+			echo "thefuck is not installed \"sudo apt install thefuck\""
+		fi
 	fi
 
-	if ! __znm_cmd_exists apt-show-versions; then
-		echo "apt-show-versions is not installed \"sudo apt install apt-show-versions\""
+	if __znm_cmd_exists apt; then
+		if ! __znm_cmd_exists apt-show-versions; then
+			echo "apt-show-versions is not installed \"sudo apt install apt-show-versions\""
+		fi
 	fi
 
 	ln -sf "${__dirname}/zatsunenomokou_custom_theme.zsh-theme" ~/.oh-my-zsh/custom/themes/zatsunenomokou_custom_theme.zsh-theme
