@@ -19,7 +19,8 @@ if [ -z "$(which git)" ] || [ -z "$(which zsh)" ]; then
 		&& (cd - || exit 1)
 
 		mkdir -p "$HOME/.config/fontconfig/conf.d/" && \
-		curl -L "https://github.com/powerline/powerline/blob/develop/font/10-powerline-symbols.conf" -o ~/.config/fontconfig/conf.d/10-powerline-symbols.conf
+		curl -L "https://github.com/powerline/powerline/blob/develop/font/10-powerline-symbols.conf" -o ~/.config/fontconfig/conf.d/10-powerline-symbols.conf && \
+		curl -L "https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf" -o ~/.local/share/fonts/10-powerline-symbols.conf
 	else
 		echo "Unknown package manager !"
 	fi
