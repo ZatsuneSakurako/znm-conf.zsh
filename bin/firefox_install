@@ -7,8 +7,8 @@ if [ $arch == 'aarch64' ]; then
   targetOs='linux64-aarch64'
 fi
 
-sudo wget --no-verbose --show-progress -O "firefox-dev.tar.bz2" "https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=${targetOs}&lang=fr" || exit 1
+sudo wget --no-verbose --show-progress -O "firefox-dev.tar.xz" "https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=${targetOs}&lang=fr" || exit 1
 if [ -d firefox ]; then sudo rm -rf /opt/firefox.bak || exit 1; fi
-sudo tar -jxvf firefox-dev.tar.bz2 || exit 1
-sudo rm firefox-dev.tar.bz2 || exit 1
+sudo tar -Jxvf firefox-dev.tar.xz || exit 1
+sudo rm firefox-dev.tar.xz || exit 1
 cd - > /dev/null || exit 1
