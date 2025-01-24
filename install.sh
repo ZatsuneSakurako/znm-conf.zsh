@@ -1,12 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
+source "$HOME/.znm-conf.zsh/utils.zsh"
 if __znm_cmd_exists apk; then
 	if ! __znm_cmd_exists pip3; then
 		sudo apk add python3 py3-pip py3-setuptools python3-dev musl-dev linux-headers
 	fi
 fi
 
-if [ -z "$(which git)" ] || [ -z "$(which zsh)" ]; then
+if (! __znm_cmd_exists git) || (! __znm_cmd_exists zsh); then
 	echo 'Installing libs'
 	if __znm_cmd_exists apt; then
 		sudo apt install git zsh curl wget fonts-powerline
@@ -26,22 +27,11 @@ if [ -z "$(which git)" ] || [ -z "$(which zsh)" ]; then
 	fi
 fi
 
-if [ -z "$(which thefuck)" ]; then
-	echo 'Installing libs'
-	if __znm_cmd_exists apt; then
-		sudo apt install thefuck
-	elif __znm_cmd_exists apk; then
-		pip3 install thefuck
-	else
-		echo "Unknown package manager !"
-	fi
-fi
-
 if [ ! -e ~/.oh-my-zsh ]; then
 	sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || exit
 fi
 
-if [ -z "$(which cmake)" ]; then
+if ! __znm_cmd_exists cmake; then
 	echo 'Installing libs'
 
 	if __znm_cmd_exists apt; then
