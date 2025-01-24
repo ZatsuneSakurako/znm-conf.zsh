@@ -119,18 +119,27 @@ compctl -K _znm_autocompl znm
 
 
 source $ZSH/oh-my-zsh.sh
-source ~/bin/antigen.zsh
+source ${ZDOTDIR:-~}/.antidote/antidote.zsh
 
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+# https://antidote.sh/migrating-from-antigen
+# Initialize antidote's dynamic mode, which changes `antidote bundle` from static mode.
+source <(antidote init)
 
-local antigenPlugins=(
+# Bundle Fish-like auto suggestions just like you would with antigen.
+antidote bundle zsh-users/zsh-autosuggestions
+
+# Bundle extra zsh completions too.
+antidote bundle zsh-users/zsh-completions
+
+antidote bundle getantidote/use-omz
+
+
+
+local omzPlugins=(
 	# Bundles from the default repo (robbyrussell's oh-my-zsh).
 	'git'
 
 	'pip'
-	'zsh-users/zsh-completions'
-	'zsh-users/zsh-autosuggestions'
 	'command-not-found'
 	'docker'
 	'docker-compose'
@@ -142,16 +151,25 @@ local antigenPlugins=(
 	'yarn'
 	'wp-cli'
 	'gcloud'
+)
+for x in $antigenPlugins; do antidote bundle ohmyzsh/ohmyzsh $x; done
 
+
+
+local antigenPlugins=(
 	# Syntax highlighting bundle.
 	'zsh-users/zsh-syntax-highlighting'
 )
-for x in $antigenPlugins; do antigen bundle $x; done
+for x in $antigenPlugins; do antidote bundle $x; done
+
+
 
 if [[ "$(uname | tr '[:upper:]' '[:lower:]')" == "linux" ]]; then
 	# tmux-mem-cpu-load
-	antigen bundle 'thewtex/tmux-mem-cpu-load'
+	antidote bundle 'thewtex/tmux-mem-cpu-load'
 fi
+
+
 
 if [ -f ~/.zshrc.local ]; then . ~/.zshrc.local; fi
 
@@ -190,8 +208,6 @@ if [ -d "$HOME/.bun" ]; then
 	export BUN_INSTALL="$HOME/.bun"
 	export PATH="$BUN_INSTALL/bin:$PATH"
 fi
-
-antigen apply
 
 if which thefuck &>/dev/null 2&>/dev/null; then
 	eval $(thefuck --alias)

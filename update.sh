@@ -5,11 +5,16 @@ source "$HOME/.znm-conf.zsh/utils.zsh"
 function () {
 	cd "$__dirname" || exit 1
 
-	mkdir -p ~/bin
-	wget -q -O ~/bin/antigen.zsh.new git.io/antigen
-	if [ $? -eq 0 ] && [ -e ~/.gitignore ]; then
-		mv ~/bin/antigen.zsh.new ~/bin/antigen.zsh
+	if [ -f "~/bin/antigen.zsh" ]; then
+		echo "Removing antigen..."
+		rm ~/bin/antigen.zsh
+		rm -rf ~/.antigen
 	fi
+
+
+	# Clone antidote if necessary.
+	[[ -e ${ZDOTDIR:-~}/.antidote ]] || git clone https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+
 
 	if [ ! -e ~/.gitignore ]; then
 		touch ~/.gitignore
