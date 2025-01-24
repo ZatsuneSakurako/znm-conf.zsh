@@ -6,9 +6,12 @@ function () {
 	cd "$__dirname" || exit 1
 
 	if [ -f "~/bin/antigen.zsh" ]; then
-		echo "Removing antigen..."
-		rm ~/bin/antigen.zsh
-		rm -rf ~/.antigen
+		echo "Removing antigen.zsh..."
+		rm "$HOME/bin/antigen.zsh"
+	fi
+	if [ -d "~/.antigen" ]; then
+		echo "Removing .antigen..."
+		rm -rf "$HOME/.antigen"
 	fi
 
 
