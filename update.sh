@@ -16,7 +16,10 @@ function () {
 
 
 	# Clone antidote if necessary.
-	[[ -e ${ZDOTDIR:-~}/.antidote ]] || git clone https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote
+	if [[ ! -e ${ZDOTDIR:-~}/.antidote ]]; then
+		git clone https://github.com/mattmc3/antidote.git ${ZDOTDIR:-~}/.antidote \
+		&& echo -e "\nPlease re-open your terminal to avoid any problem !\n"
+	fi
 
 
 	if [ ! -e ~/.gitignore ]; then
