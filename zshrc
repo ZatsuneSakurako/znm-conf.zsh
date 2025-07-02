@@ -209,10 +209,6 @@ if [ -d "$HOME/.bun" ]; then
 	export PATH="$BUN_INSTALL/bin:$PATH"
 fi
 
-if which thefuck &>/dev/null 2&>/dev/null; then
-	eval $(thefuck --alias)
-fi
-
 if [ -f ~/.bash_aliases ]; then . ~/.bash_aliases; fi
 
 
