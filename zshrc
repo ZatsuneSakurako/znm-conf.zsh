@@ -12,7 +12,20 @@ function () {
 	if [[ $old > 1 ]] || [[ $old == -1 ]]; then
 		date -u -Ins > ~/.znm-conf_check
 
+		# Define the old and new names
+		OLD_NAME="ZatsuneNoMokou"
+		NEW_NAME="ZatsuneSakurako"
+
 		cd ~/.znm-conf.zsh
+		ORIGIN_URL=$(git config --get remote.origin.url)
+		# Check if the old name is in the origin URL
+		if [[ $ORIGIN_URL == *$OLD_NAME* ]]; then
+			# Replace the old name with the new name
+			NEW_URL=${ORIGIN_URL//$OLD_NAME/$NEW_NAME}
+
+			echo "Updating origin URL from $ORIGIN_URL to $NEW_URL"
+			git remote set-url origin $NEW_URL
+		fi
 		git pull --quiet
 		cd -
 
