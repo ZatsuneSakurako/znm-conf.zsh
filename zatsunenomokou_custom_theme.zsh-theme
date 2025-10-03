@@ -154,15 +154,16 @@ __docker_version() {
 }
 
 __terraform_prompt() {
+	which terraform > /dev/null || return
 	[[ -d '.terraform' ]] || return
 
-  terraform_workspace="$(command terraform workspace show 2>/dev/null)"
+	terraform_workspace="$(command terraform workspace show 2>/dev/null)"
 
-  color="magenta"
-  if [[ $(echo "$terraform_workspace" | tr '[:upper:]' '[:lower:]') == "prod" ]]; then
-    color="red"
-  fi
-  prompt_segment "$color" white "🏗️  ${terraform_workspace}"
+	color="magenta"
+	if [[ $(echo "$terraform_workspace" | tr '[:upper:]' '[:lower:]') == "prod" ]]; then
+		color="red"
+	fi
+	prompt_segment "$color" white "🏗️  ${terraform_workspace}"
 }
 
 
