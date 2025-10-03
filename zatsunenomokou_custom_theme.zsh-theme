@@ -111,10 +111,12 @@ __node_version() {
 }
 
 __node_packages() {
+	__znm_cmd_exists node || return
+
 	[[ -f package.json || -d node_modules ]] || return
 
-    local packageList
-    # shellcheck disable=SC2207
+	local packageList
+	# shellcheck disable=SC2207
 	packageList=($(jq -r '.dependencies + .devDependencies // [] |keys|unique|.[]' package.json))
 
 	for packageName in "${packageList[@]}"
@@ -128,11 +130,13 @@ __node_packages() {
 __php_version() {
 	setopt extendedglob
 
+	__znm_cmd_exists php || return
+
+
 	# Show only if php files or composer.json exist in current directory
 	# [[ -n *.php(#qN^/) || -f composer.json ]] || return
 	[[ -f composer.json ]] || return
 
-	__znm_cmd_exists php || return
 
 	local php_version
 	php_version=$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
