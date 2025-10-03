@@ -154,7 +154,7 @@ __docker_version() {
 }
 
 __terraform_prompt() {
-	which terraform > /dev/null || return
+	__znm_cmd_exists terraform || return
 	[[ -d '.terraform' ]] || return
 
 	terraform_workspace="$(command terraform workspace show 2>/dev/null)"
