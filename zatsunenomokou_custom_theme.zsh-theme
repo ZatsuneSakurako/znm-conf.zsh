@@ -153,6 +153,18 @@ __docker_version() {
 	prompt_segment 33 white "🐳"
 }
 
+__terraform_prompt() {
+	[[ -d '.terraform' ]] || return
+
+  terraform_workspace="$(command terraform workspace show 2>/dev/null)"
+
+  color="magenta"
+  if [[ $(echo "$terraform_workspace" | tr '[:upper:]' '[:lower:]') == "prod" ]]; then
+    color="red"
+  fi
+  prompt_segment "$color" white "🏗️  ${terraform_workspace}"
+}
+
 
 
 ZNM_GIT_SHOW_STATUS='1'
@@ -221,7 +233,7 @@ __git_prompt() {
 			fi
 		fi
 
-		prompt_segment magenta white "  $result"
+		prompt_segment 6 white "  $result"
 	fi
 }
 
@@ -287,6 +299,7 @@ __zatsunenomokou_buildPrompt() {
 	__docker_version
 	__node_version
 	__node_packages
+	__terraform_prompt
 	prompt_end
 
 	printf "\n"
