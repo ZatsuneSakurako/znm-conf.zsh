@@ -148,8 +148,8 @@ __php_version() {
 
 	php_require=$(jq -r '.require.php' composer.json)
 	php_required=$(echo "$php_require" | cut -d'^' -f2)
-	if [[ "$(printf '%s\n' "$php_required" "$php_version" | sort -V | head -n1)" == "$php_required" ]]; then
-		# meet the requirement
+	if [[ "$php_require" == "null" ]] || [[ "$(printf '%s\n' "$php_required" "$php_version" | sort -V | head -n1)" == "$php_required" ]]; then
+		# meet the requirement or no requirement
 		php_requirement=""
 	else
 		textColor="red"
