@@ -137,6 +137,7 @@ __php_version() {
 	# [[ -n *.php(#qN^/) || -f composer.json ]] || return
 	[[ -f composer.json ]] || return
 
+	textColor="white"
 
 	local php_version
 	php_version=$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
@@ -145,9 +146,19 @@ __php_version() {
 		default_version=$(apt-show-versions php | cut -d' ' -f2 | cut -d'-' -f1)
 	fi
 
+	php_require=$(jq -r '.require.php' composer.json)
+	php_required=$(echo "$php_require" | cut -d'^' -f2)
+	if [[ "$(printf '%s\n' "$php_required" "$php_version" | sort -V | head -n1)" == "$php_required" ]]; then
+		# meet the requirement
+		php_requirement=""
+	else
+		textColor="red"
+		php_requirement=" (⬇️${php_require})"
+	fi
+
 	php_version=${php_version/v/}
 	if [[ $php_version != "$default_version" ]]; then
-		prompt_segment 20 white "🐘 ${php_version}"
+		prompt_segment 20 "$textColor" "🐘 ${php_version}${php_requirement}"
 	fi
 }
 
