@@ -78,9 +78,7 @@ source "$HOME/.znm-conf.zsh/utils.zsh"
 __node_version() {
 	setopt extendedglob
 
-	# Show NODE status only for JS-specific folders
-	# [[ -f package.json || -d node_modules || -n *.js(#qN^/) ]] || return
-	[[ -f package.json || -d node_modules ]] || return
+	[[ ! -f package.json ]] && return
 
 	local node_version
 
