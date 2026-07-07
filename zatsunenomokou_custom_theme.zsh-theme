@@ -111,7 +111,7 @@ __node_version() {
 __node_packages() {
 	__znm_cmd_exists node || return
 
-	[[ -f package.json || -d node_modules ]] || return
+	[[ ! -f package.json ]] && return
 
 	local packageList
 	# shellcheck disable=SC2207
