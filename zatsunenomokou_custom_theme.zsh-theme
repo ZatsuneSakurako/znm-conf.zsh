@@ -141,6 +141,8 @@ __php_version() {
 
 	local default_version=''
 	default_version="$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')"
+	local default_major_minor=''
+	default_major_minor=$(echo "$default_version" | cut -d. -f1-2)
 	if __znm_cmd_exists apt-show-versions; then
 		if __znm_cmd_exists dpkg; then
 			if dpkg -s php &>/dev/null; then
@@ -159,15 +161,17 @@ __php_version() {
 		# no requirement
 		php_requirement=""
 	elif [[ "$(printf '%s\n' "$php_required" "$default_version" | sort -V | head -n1)" == "$php_required" ]]; then
-		if [[ "$php_required" == "$default_version" ]]; then
-			# exact requirement matched
+	  local php_requirement_major_minor
+		php_requirement_major_minor=$(echo "$php_required" | cut -d. -f1-2)
+		if [[ "$php_requirement_major_minor" == "$default_major_minor" ]]; then
+			# requirement matched the first 2 numbers x.x....
 			php_requirement=""
 		else
 			textColor="red"
 			php_requirement=" (⬆️${php_require})"
 		fi
 	else
-			textColor="red"
+		textColor="red"
 		php_requirement=" (⬇️${php_require} ! )"
 	fi
 
@@ -176,7 +180,7 @@ __php_version() {
 		# No need to display version
 		prompt_segment 20 "$textColor" "🐘"
 	else
-		prompt_segment 20 "$textColor" "🐘 ${php_requirement}"
+		prompt_segment 20 "$textColor" "🐘 ${default_version} ${php_requirement}"
 	fi
 }
 
