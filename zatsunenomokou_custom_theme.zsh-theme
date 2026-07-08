@@ -84,17 +84,16 @@ __node_version() {
 
 	if __znm_cmd_exists fnm; then
 		node_version=$(fnm current 2>/dev/null)
-		[[ $node_version == "system" || $node_version == "node" ]] && return
 	elif __znm_cmd_exists nvm; then
 		node_version=$(nvm current 2>/dev/null)
-		[[ $node_version == "system" || $node_version == "node" ]] && return
 	elif __znm_cmd_exists nodenv; then
 		node_version=$(nodenv version-name)
-		[[ $node_version == "system" || $node_version == "node" ]] && return
 	elif __znm_cmd_exists node; then
 		node_version=$(node -v 2>/dev/null)
-	else
-		return
+	fi
+
+	if [[ $node_version == "system" || $node_version == "node" ]]; then
+		node_version=''
 	fi
 
 	local default_version=''
@@ -103,7 +102,10 @@ __node_version() {
 	fi
 
 	node_version=${node_version/v/}
-	if [[ $node_version != "$default_version" ]]; then
+	if [[ $node_version == "$default_version" ]]; then
+		# No need to display version
+		prompt_segment green white "⬢"
+	else
 		prompt_segment green white "⬢ ${node_version}"
 	fi
 }
@@ -137,26 +139,44 @@ __php_version() {
 
 	textColor="white"
 
-	local php_version
-	php_version=$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')
 	local default_version=''
+	default_version="$(php -v 2>&1 | \grep --color=never -oe "^PHP\s*[0-9.]\+" | awk '{print $2}')"
 	if __znm_cmd_exists apt-show-versions; then
-		default_version=$(apt-show-versions php | cut -d' ' -f2 | cut -d'-' -f1)
+		if __znm_cmd_exists dpkg; then
+			if dpkg -s php &>/dev/null; then
+				default_version=$(apt-show-versions php | cut -d' ' -f2 | cut -d'-' -f1)
+			fi
+		fi
 	fi
 
+	local php_require
 	php_require=$(jq -r '.require.php' composer.json)
+	local php_required
 	php_required=$(echo "$php_require" | cut -d'^' -f2)
-	if [[ "$php_require" == "null" ]] || [[ "$(printf '%s\n' "$php_required" "$php_version" | sort -V | head -n1)" == "$php_required" ]]; then
-		# meet the requirement or no requirement
+	local textColor
+	local php_requirement
+	if [[ "$php_require" == "null" ]]; then
+		# no requirement
 		php_requirement=""
+	elif [[ "$(printf '%s\n' "$php_required" "$default_version" | sort -V | head -n1)" == "$php_required" ]]; then
+		if [[ "$php_required" == "$default_version" ]]; then
+			# exact requirement matched
+			php_requirement=""
+		else
+			textColor="red"
+			php_requirement=" (⬆️${php_require})"
+		fi
 	else
-		textColor="red"
-		php_requirement=" (⬇️${php_require})"
+			textColor="red"
+		php_requirement=" (⬇️${php_require} ! )"
 	fi
 
-	php_version=${php_version/v/}
-	if [[ $php_version != "$default_version" ]]; then
-		prompt_segment 20 "$textColor" "🐘 ${php_version}${php_requirement}"
+	default_version=${default_version/v/}
+	if [[ -z "$php_requirement" ]]; then
+		# No need to display version
+		prompt_segment 20 "$textColor" "🐘"
+	else
+		prompt_segment 20 "$textColor" "🐘 ${php_requirement}"
 	fi
 }
 
