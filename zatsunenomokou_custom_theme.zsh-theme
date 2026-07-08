@@ -161,7 +161,7 @@ __php_version() {
 		# no requirement
 		php_requirement=""
 	elif [[ "$(printf '%s\n' "$php_required" "$default_version" | sort -V | head -n1)" == "$php_required" ]]; then
-	  local php_requirement_major_minor
+		local php_requirement_major_minor
 		php_requirement_major_minor=$(echo "$php_required" | cut -d. -f1-2)
 		if [[ "$php_requirement_major_minor" == "$default_major_minor" ]]; then
 			# requirement matched the first 2 numbers x.x....
