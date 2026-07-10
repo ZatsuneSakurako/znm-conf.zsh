@@ -178,8 +178,11 @@ for x in $antigenPlugins; do antidote bundle $x; done
 
 
 if [[ "$(uname | tr '[:upper:]' '[:lower:]')" == "linux" ]]; then
-	# tmux-mem-cpu-load
-	antidote bundle 'thewtex/tmux-mem-cpu-load'
+	# skipping for android
+	if [[ "$(uname -o | tr '[:upper:]' '[:lower:]')" != "android" ]]; then
+		# tmux-mem-cpu-load
+		antidote bundle 'thewtex/tmux-mem-cpu-load'
+	fi
 fi
 
 
@@ -216,7 +219,7 @@ fi
 
 if [ -d "$HOME/.bun" ]; then
 	source "$HOME/.bun/_bun"
-	
+
 	# bun
 	export BUN_INSTALL="$HOME/.bun"
 	export PATH="$BUN_INSTALL/bin:$PATH"
