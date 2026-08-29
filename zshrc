@@ -217,14 +217,6 @@ if [ -d "$HOME/.nvm" ]; then
 	load-nvmrc
 fi
 
-if [ -d "$HOME/.bun" ]; then
-	source "$HOME/.bun/_bun"
-
-	# bun
-	export BUN_INSTALL="$HOME/.bun"
-	export PATH="$BUN_INSTALL/bin:$PATH"
-fi
-
 if [ -f ~/.bash_aliases ]; then . ~/.bash_aliases; fi
 
 
